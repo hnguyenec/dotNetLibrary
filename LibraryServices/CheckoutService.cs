@@ -255,7 +255,7 @@ namespace LibraryServices
             _context.SaveChanges();
         }
 
-        private bool IsCheckedOut(int assetId)
+        public bool IsCheckedOut(int assetId)
         {
             return _context.Checkouts
                 .Any(co => co.LibraryAsset.Id == assetId);

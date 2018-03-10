@@ -25,5 +25,7 @@ namespace LibraryData
 
         void MarkLost(int assetId);
         void MarkFound(int assetId);
+
+        bool IsCheckedOut(int assetId);
     }
 }
