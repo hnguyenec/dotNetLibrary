@@ -8,10 +8,13 @@ namespace Library.Controllers
     public class CatalogController : Controller
     {
         private readonly ILibraryAsset _assets;
+        private readonly ICheckout _checkouts;
 
-        public CatalogController(ILibraryAsset assets)
+
+        public CatalogController(ILibraryAsset assets, ICheckout checkouts)
         {
             _assets = assets;
+            _checkouts = checkouts;
         }
 
         public IActionResult Index()
@@ -49,7 +52,8 @@ namespace Library.Controllers
                 ImageUrl = asset.ImageUrl,
                 AuthorOrDirector = _assets.GetAuthorOrDirector(id),
                 CurrentLocation = _assets.GetCurrentLocation(id).Name,
-                DeweyCallNumber = _assets.GetIsbn(id)
+                DeweyCallNumber = _assets.GetDeweyIndex(id),
+                ISBN = _assets.GetIsbn(id)
             };
 
             return View(model);
