@@ -234,6 +234,7 @@ namespace LibraryServices
             var now = DateTime.Now;
 
             var item = _context.LibraryAssets
+                    .Include(asset => asset.Status)
                 .FirstOrDefault(a => a.Id == assetId);
 
             var libraryCard = _context.LibraryCards
