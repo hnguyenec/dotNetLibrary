@@ -138,7 +138,7 @@ namespace LibraryServices
             _context.SaveChanges();
         }
 
-        public void CheckInItem(int assetId, int libraryCardId)
+        public void CheckInItem(int assetId)
         {
             var now = DateTime.Now;
             var item = _context.LibraryAssets
@@ -161,6 +161,7 @@ namespace LibraryServices
             if (currentHolds.Any())
             {
                 CheckoutToEarliestHold(assetId, currentHolds);
+                return;
             }
             // otherwise, update the item status to available
             UpdateAssetStatus(assetId, "Available");
@@ -171,8 +172,10 @@ namespace LibraryServices
         private void CheckoutToEarliestHold(int assetId, IQueryable<Hold> currentHolds)
         {
             var earliestHold = currentHolds
-                .OrderByDescending(hold => hold.HoldPlaced)
+                .OrderBy(hold => hold.HoldPlaced)
                 .FirstOrDefault();
+
+            if (earliestHold == null) return;
 
             var card = earliestHold.LibraryCard;
 

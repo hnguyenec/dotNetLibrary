@@ -87,35 +87,41 @@ namespace Library.Controllers
             return View(model);
         }
 
-        public IActionResult MarkLost(int assetId)
+        public IActionResult CheckIn(int id)
         {
-            _checkouts.MarkLost(assetId);
+            _checkouts.CheckInItem(id);
+            return RedirectToAction("Detail", new {id = id});
+        }
+
+        public IActionResult MarkLost(int id)
+        {
+            _checkouts.MarkLost(id);
             return RedirectToAction("Detail", new
             {
-                id = assetId
+                id = id
             });
         }
 
-        public IActionResult MarkFound(int assetId)
+        public IActionResult MarkFound(int id)
         {
-            _checkouts.MarkFound(assetId);
+            _checkouts.MarkFound(id);
             return RedirectToAction("Detail", new
             {
-                id = assetId
+                id = id
             });
         }
 
-        public IActionResult Hold(int assetId)
+        public IActionResult Hold(int id)
         {
-            var asset = _assets.GetById(assetId);
+            var asset = _assets.GetById(id);
             var model = new CheckoutModel
             {
-                AssetId = assetId,
+                AssetId = id,
                 ImageUrl = asset.ImageUrl,
                 Title = asset.Title,
                 LibraryCardId = "",
-                IsCheckedOut = _checkouts.IsCheckedOut(assetId),
-                HoldCount = _checkouts.GetCurrentHolds(assetId).Count()
+                IsCheckedOut = _checkouts.IsCheckedOut(id),
+                HoldCount = _checkouts.GetCurrentHolds(id).Count()
             };
             return View(model);
         }
@@ -133,5 +139,6 @@ namespace Library.Controllers
             _checkouts.PlaceHold(assetId, libraryCardId);
             return RedirectToAction("Detail", new { id = assetId });
         }
+       
     }
 }
