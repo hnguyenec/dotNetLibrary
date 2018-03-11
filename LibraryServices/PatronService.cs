@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using LibraryData;
 using LibraryData.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryServices
 {
-    public class PatronService: IPatron
+    public class PatronService : IPatron
     {
-        private LibraryContext _context;
+        private readonly LibraryContext _context;
+
         public PatronService(LibraryContext context)
         {
             _context = context;
@@ -37,7 +36,7 @@ namespace LibraryServices
 
         public IEnumerable<CheckoutHistory> GetCheckoutHistories(int patronId)
         {
-            int cardId = GetPatronLibraryCardId(patronId);
+            var cardId = GetPatronLibraryCardId(patronId);
 
             return _context.CheckoutHistories
                 .Include(h => h.LibraryCard)
@@ -46,17 +45,9 @@ namespace LibraryServices
                 .OrderByDescending(h => h.CheckedOut);
         }
 
-        private int GetPatronLibraryCardId(int patronId)
-        {
-            return _context.Patrons
-                            .Include(p => p.LibraryCard)
-                            .FirstOrDefault(p => p.Id == patronId)
-                            .LibraryCard.Id;
-        }
-
         public IEnumerable<Hold> GetHolds(int patronId)
         {
-            int cardId = GetPatronLibraryCardId(patronId);
+            var cardId = GetPatronLibraryCardId(patronId);
             return _context.Holds
                 .Include(hold => hold.LibraryCard)
                 .Include(hold => hold.LibraryAsset)
@@ -66,11 +57,19 @@ namespace LibraryServices
 
         public IEnumerable<Checkout> GetCheckouts(int patronId)
         {
-            int cardId = GetPatronLibraryCardId(patronId);
+            var cardId = GetPatronLibraryCardId(patronId);
             return _context.Checkouts
                 .Include(co => co.LibraryCard)
                 .Include(co => co.LibraryAsset)
                 .Where(co => co.LibraryCard.Id == cardId);
+        }
+
+        private int GetPatronLibraryCardId(int patronId)
+        {
+            return _context.Patrons
+                .Include(p => p.LibraryCard)
+                .FirstOrDefault(p => p.Id == patronId)
+                .LibraryCard.Id;
         }
     }
 }
